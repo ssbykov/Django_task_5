@@ -22,10 +22,15 @@ class SensorApi(ListAPIView):
         else:
             return Response({'status': 'параметр name отсутствует'})
 
-    def patch(self, request, id):
+
+class SensorView(RetrieveAPIView):
+    queryset = Sensor.objects.all()
+    serializer_class = SensorSerializer
+
+    def patch(self, request, pk):
         name = request.GET.get('name')
         try:
-            sensor = Sensor.objects.get(id=int(id))
+            sensor = Sensor.objects.get(id=int(pk))
             if name:
                 sensor.name = name
             sensor.description = request.GET.get('description')
@@ -33,11 +38,6 @@ class SensorApi(ListAPIView):
             return Response({'status': f'датчик с id={id} изменен.'})
         except:
             return Response({'status': f'датчик с id={id} отсутствует.'})
-
-
-class SensorView(RetrieveAPIView):
-    queryset = Sensor.objects.all()
-    serializer_class = SensorSerializer
 
 
 @api_view(['POST'])
